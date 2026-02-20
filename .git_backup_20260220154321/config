@@ -1,0 +1,13 @@
+[core]
+	repositoryformatversion = 0
+	filemode = false
+	bare = false
+	logallrefupdates = true
+	symlinks = false
+	ignorecase = true
+[user]
+	email = auto@local
+	name = Auto Commit
+[remote "origin"]
+	url = https://github.com/Adishinde1630/Diamond_Price_Pridiction.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
