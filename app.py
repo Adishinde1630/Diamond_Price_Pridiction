@@ -5,6 +5,7 @@ import subprocess
 import numpy as np
 import pandas as pd
 import streamlit as st
+import matplotlib.pyplot as plt
 import joblib
 
 
@@ -46,21 +47,54 @@ min_width, max_width = float(df['width'].min()), float(df['width'].max())
 
 if page == 'Home':
     st.title('Diamond Price Prediction')
+
+    st.header('Project Overview')
     st.markdown(
-        'This project predicts diamond prices (USD) using features from the provided `diamonds.csv`. '
-        'The app reads dataset ranges to build input widgets and uses a trained regression model (kept in the backend) to predict price.'
+        'This Streamlit app provides an interface to predict diamond prices (USD) using a trained regression model. '
+        'Inputs are derived from the provided dataset and the model is loaded from the workspace when predictions are requested.'
     )
-    st.header('Dataset overview')
+
+    st.subheader('Business objective')
+    st.write(
+        '- **Goal:** Provide fast, interpretable price estimates for diamonds given basic physical attributes so stakeholders '
+        'can make pricing or valuation decisions.'
+        '- **Primary users:** Retail jewelers, appraisers, and analysts.'
+    )
+
+    st.subheader('Key project features')
+    st.write('- Predict price from physical measurements: `carat`, `depth`, `length`, `width`.')
+    st.write('- Uses a trained regression model with a scaler to normalize inputs.')
+    st.write('- Displays model performance (MAE) from training metadata when available.')
+    st.write('- Simple UI for quick what-if scenarios via sliders.')
+
+    st.header('Data overview')
     st.write(f'- Rows: {df.shape[0]}')
     st.write(f'- Columns: {df.shape[1]}')
     st.write('- Features used for prediction: `carat`, `depth`, `length`, `width`')
+
     st.subheader('Feature ranges (from dataset)')
     st.write(f'- Carat: {min_carat} — {max_carat}')
     st.write(f'- Depth: {min_depth} — {max_depth}')
     st.write(f'- Length: {min_length} — {max_length}')
     st.write(f'- Width: {min_width} — {max_width}')
+
+    st.subheader('Summary statistics')
+    st.dataframe(df.describe())
+
+    st.subheader('Price distribution')
+    try:
+        fig, ax = plt.subplots()
+        ax.hist(df['price'], bins=30, color='#2c7fb8')
+        ax.set_xlabel('Price (USD)')
+        ax.set_ylabel('Count')
+        ax.set_title('Price distribution')
+        st.pyplot(fig)
+    except Exception:
+        st.write('Unable to render price distribution plot.')
+
     st.subheader('Preview')
     st.dataframe(df.head())
+
     if os.path.exists(INFO_PATH):
         try:
             with open(INFO_PATH, 'r') as f:
